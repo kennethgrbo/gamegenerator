@@ -92,10 +92,6 @@
       color: var(--text-main);
     }
 
-    .info-val {
-      color: var(--text-main);
-    }
-
     /* Utility small icon buttons */
     .icon-btn {
       background: none;
@@ -425,7 +421,6 @@
     <div><span class="info-label">Name:</span> Bolt.new</div>
     <div><span class="info-label">Website:</span> <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer">https://bolt.new/</a></div>
     <div><span class="info-label">Account:</span> learningapp6@luac.edu.hk</div>
-    <div><span class="info-label">Password:</span> <span class="info-val">luac82082092</span></div>
   </div>
 
   <header>
@@ -470,7 +465,6 @@
       <div><span class="info-label">Name:</span> Bolt.new</div>
       <div><span class="info-label">Website:</span> <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer">https://bolt.new/</a></div>
       <div><span class="info-label">Account:</span> learningapp6@luac.edu.hk</div>
-      <div><span class="info-label">Password:</span> <span class="info-val" style="color: var(--success); font-weight: bold;">luac82082092</span></div>
     </div>
   </div>
 
@@ -779,6 +773,7 @@
       updatePitch();
     }
 
+    // Roll options logic
     function rollUnlocked() {
       categories.forEach(cat => {
         if (!state[cat.id].locked) {
