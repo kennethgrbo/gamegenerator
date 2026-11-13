@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Junior Game Idea Generator & Math Integrator</title>
+  <title>Game Idea Generator</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -16,6 +16,8 @@
       --text-main: #f8fafc;
       --text-sub: #94a3b8;
       --pitch-bg: #111827;
+      --danger: #ef4444;
+      --success: #10b981;
     }
 
     * {
@@ -33,12 +35,103 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+    }
+
+    /* Bolt.new Info Panel styling */
+    .info-panel {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      line-height: 1.4;
+      width: 300px;
+      z-index: 10;
+    }
+
+    .info-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.25rem;
+    }
+
+    .info-panel-title {
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 0.85rem;
+    }
+
+    .info-panel a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .info-panel a:hover {
+      text-decoration: underline;
+    }
+
+    .info-panel div {
+      margin-bottom: 0.25rem;
+    }
+
+    .info-panel div:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .action-link {
+      color: var(--accent);
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: none;
+      background: none;
+      padding: 0;
+      margin-left: 0.5rem;
+    }
+
+    .action-link:hover {
+      color: var(--accent-hover);
+    }
+
+    /* Utility small icon buttons */
+    .icon-btn {
+      background: none;
+      border: none;
+      color: var(--text-sub);
+      cursor: pointer;
+      padding: 0.2rem;
+      font-size: 1rem;
+      border-radius: 0.25rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-btn:hover {
+      color: var(--text-main);
+      background-color: var(--card-border);
     }
 
     header {
       text-align: center;
       max-width: 800px;
       margin-bottom: 2rem;
+      margin-top: 3rem;
     }
 
     header h1 {
@@ -53,6 +146,45 @@
     header p {
       color: var(--text-sub);
       font-size: 1rem;
+    }
+
+    /* Main Level Switcher Styling */
+    .level-switcher-container {
+      background-color: var(--card-bg);
+      border: 2px solid var(--accent);
+      border-radius: 1rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+      flex-wrap: wrap;
+    }
+
+    .level-switcher-label {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .level-switcher-select {
+      background-color: var(--bg);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      padding: 0.5rem 1.5rem 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .level-switcher-select:focus {
+      border-color: var(--accent);
     }
 
     .toolbar {
@@ -155,13 +287,13 @@
     }
 
     .card-value {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: var(--text-main);
-      min-height: 3.5rem;
+      min-height: 4.5rem;
       display: flex;
       align-items: center;
-      line-height: 1.3;
+      line-height: 1.4;
     }
 
     .card select {
@@ -227,14 +359,108 @@
     .copied-toast.show {
       opacity: 1;
     }
+
+    /* Modal / Popup styling for Enlarge Credentials */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal-card {
+      background-color: var(--card-bg);
+      border: 3px solid var(--accent);
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+    }
+
+    .modal-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+      border-bottom: 2px solid var(--card-border);
+      padding-bottom: 0.5rem;
+    }
+
+    .modal-card div {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-card div:last-child {
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 768px) {
+      .info-panel {
+        position: static;
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+      header {
+        margin-top: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Top Right Info Panel -->
+  <div class="info-panel">
+    <div class="info-panel-header">
+      <span class="info-panel-title">System Account</span>
+      <button class="icon-btn" onclick="openEnlargeModal()" title="Enlarge credentials view">🔍</button>
+    </div>
+    <div><span class="info-label">Name:</span> Bolt.new</div>
+    <div><span class="info-label">Website:</span> <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer">https://bolt.new/</a></div>
+    <div><span class="info-label">Account:</span> learningapp6@luac.edu.hk</div>
+    <div>
+      <span class="info-label">Password:</span> 
+      <span id="pass-field-main">••••••••</span>
+      <button class="action-link" id="reveal-btn-main" onclick="askForPasscode('main')">Reveal Password</button>
+    </div>
+  </div>
+
   <header>
     <h1>Game Idea & Math Integrator</h1>
-    <p>Generate accessible video game concepts mapped directly to the Year 7 Mathematics curriculum.</p>
+    <p>Generate accessible video game concepts mapped directly to curriculum levels.</p>
   </header>
+
+  <!-- Level/Year Switcher Section -->
+  <div class="level-switcher-container">
+    <span class="level-switcher-label">Select Year Level:</span>
+    <select id="curriculumLevelSelect" class="level-switcher-select" onchange="changeCurriculumLevel(this.value)">
+      <option value="Year 7">Year 7</option>
+      <option value="Year 8">Year 8</option>
+      <option value="Year 9">Year 9</option>
+      <option value="FP">Foundation Program (FP)</option>
+      <option value="DSE">DSE High School</option>
+      <option value="M2">DSE Module 2 (M2)</option>
+    </select>
+  </div>
 
   <div class="toolbar">
     <button class="btn-primary" onclick="rollUnlocked()">🎲 Generate New Idea</button>
@@ -252,27 +478,144 @@
     <p class="pitch-text" id="pitchOutput">Click "Generate New Idea" to brainstorm!</p>
   </section>
 
+  <!-- Enlarge Credentials Modal -->
+  <div class="modal-backdrop" id="credentialsModal">
+    <div class="modal-card">
+      <button class="icon-btn modal-close-btn" onclick="closeEnlargeModal()">❌</button>
+      <h3>Bolt.new Credentials</h3>
+      <div><span class="info-label">Name:</span> Bolt.new</div>
+      <div><span class="info-label">Website:</span> <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer">https://bolt.new/</a></div>
+      <div><span class="info-label">Account:</span> learningapp6@luac.edu.hk</div>
+      <div>
+        <span class="info-label">Password:</span> 
+        <span id="pass-field-modal">••••••••</span>
+        <button class="action-link" id="reveal-btn-modal" onclick="askForPasscode('modal')">Reveal Password</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // Security parameters updated with the correct passcode (first few digits of Pi: 314159)
+    const PASSCODE_CORRECT = "314159";
+    const PLAIN_PASSWORD = "luac82082092";
+    let isPasswordRevealed = false;
+
+    // Organized mathematics curricula options per year level
+    const curriculaByLevel = {
+      "Year 7": [
+        "Y7: 1. Basic Computation",
+        "Y7: 2. Directed Number and Number line",
+        "Y7: 3. Algebraic Expressions",
+        "Y7: 4. Linear equation in one unknown (I)",
+        "Y7: 5. Areas and Volumes (I)",
+        "Y7: 6. Manipulation of Polynomials",
+        "Y7: 7. Linear equation in one unknown (II)",
+        "Y7: 8. Statistics (I)",
+        "Y7: 9. Percentages I",
+        "Y7: 10. Introduction to Coordinates",
+        "Y7: 11. Angles Related to Straight Lines and Triangles",
+        "Y7: 13. Numerical Estimation",
+        "Y7: 14. Rate, Ratio and Proportion"
+      ],
+      "Year 8": [
+        "Y8: 1. Similar Triangles",
+        "Y8: 2. Angles Related to Triangles and Polygons",
+        "Y8: 3. Identities",
+        "Y8: 4. Factorization of Polynomials",
+        "Y8: 5. Algebraic Fractions and Formulas",
+        "Y8: 6. Errors in Measurement",
+        "Y8: 7. Statistics (II)",
+        "Y8: 8. Linear Inequalities in One Unknown",
+        "Y8: 9. Linear Equations in Two Unknowns",
+        "Y8: 10. Pythagoras' Theorem and Irrational Numbers",
+        "Y8: 11. Geometric Proof",
+        "Y8: 12. Introduction to Trigonometry",
+        "Y8: 13. Areas and Volumes (II)",
+        "Y8: Y7 - Ch 12 Congruent Triangles"
+      ],
+      "Year 9": [
+        "Y9: 1. More about Factorization of Polynomials",
+        "Y9: 2. Laws of Integral Indices",
+        "Y9: 3. Percentages (II)",
+        "Y9: 4. Areas and Volumes (III)",
+        "Y9: 5. Quadrilaterals",
+        "Y9: 6. Centres of Triangles",
+        "Y9: 7. Trigonometric Relations",
+        "Y9: 8. Applications of Trigonometry",
+        "Y9: 9. Coordinate Geometry of Straight Lines",
+        "Y9: 10. Measures of Central Tendency",
+        "Y9: 11. Introduction to Probability"
+      ],
+      "FP": [
+        "FP: TB1_1 Ch1 Exponents",
+        "FP: TB1_2 Ch4 Surds and other Radicals",
+        "FP: TB1_3 Ch2 Algebra Expansion & Factorization",
+        "FP: TB1_4 Ch6 Algebraic Fractions",
+        "FP: TB2_1 Ch5 Pythagoras' Theorem",
+        "FP: TB2_2 Ch15 Trigonometry",
+        "FP: TB2_3 Ch24 Advanced Trigonometry",
+        "FP: TB3_1 Ch3 Sets and Venn Diagrams",
+        "FP: TB3_2 Ch17 Probability",
+        "FP: TB3_3 Ch18 Statistics",
+        "FP: TB3_4 Ch7 Formulae",
+        "FP: TB3_5 Ch12 Linear Inequalities",
+        "FP: TB4_1 Ch10 Coordinate Geometry",
+        "FP: TB4_2 Ch20 Relations and Functions",
+        "FP: TB4_3 Ch9 Quadratic Equations",
+        "FP: TB4_4 Ch21 Quadratic Functions",
+        "FP: TB5_1 Ch19 Bivariate Statistics",
+        "FP: TB5_2 Ch16 Non-Right Angled Triangle Trigonometry",
+        "FP: TB5_3 Ch22 Number Sequences",
+        "FP: TB5_4 Ch23 Exponentials and Logarithms"
+      ],
+      "DSE": [
+        "DSE: Ch1. Quadratic Equations in One Unknown (I)",
+        "DSE: Ch2. Quadratic Equations in One Unknown (II)",
+        "DSE: Ch3. Equations of Straight Lines",
+        "DSE: Ch4. Functions and Graphs",
+        "DSE: Ch5. More about Polynomials",
+        "DSE: Ch6. Exponential and Logarithmic Functions",
+        "DSE: Ch7. Variation",
+        "DSE: Ch8. Trigonometry (I)",
+        "DSE: Ch9. More about Equations",
+        "DSE: Ch10. Inequalities",
+        "DSE: Ch11. Basic Properties of Circles (I)",
+        "DSE: Ch12. Basic Properties of Circles (II)",
+        "DSE: Ch13. Measures of Dispersion",
+        "DSE: Ch14. Trigonometry (II)",
+        "DSE: Ch15. Equation of Circles",
+        "DSE: Ch16. Locus",
+        "DSE: Ch17. Permutation and Combination",
+        "DSE: Ch18. More about Probability",
+        "DSE: Ch19. Linear Programming",
+        "DSE: Ch20. Arithmetic and Geometric Sequences",
+        "DSE: Ch21. Summation of Arithmetic and Geometric Sequences",
+        "DSE: Ch22. More about Graphs of Functions",
+        "DSE: Ch23. Uses and Abuses of Statistics"
+      ],
+      "M2": [
+        "M2: Ch1. Mathematical Induction",
+        "M2: Ch2. Binomial Theorem",
+        "M2: Ch3. More about Trigonometric Functions",
+        "M2: Ch4. Limits and the Number e",
+        "M2: Ch5. Differentiation",
+        "M2: Ch6. Applications of Differentiation",
+        "M2: Ch7. Indefinite Integration",
+        "M2: Ch8. Definite Integration",
+        "M2: Ch9. Application of Definite Integration",
+        "M2: Ch10. Matrices and Determinants",
+        "M2: Ch11. Systems of Linear Equations",
+        "M2: Ch12. Introduction to Vectors",
+        "M2: Ch13. Vector Applications"
+      ]
+    };
+
     const categories = [
       {
         id: "math",
-        name: "Year 7 Math Focus",
+        name: "Math Curriculum Focus",
         icon: "📐",
-        options: [
-          "1. Basic Computation",
-          "2. Directed Number and Number line",
-          "3. Algebraic Expressions",
-          "4. Linear equation in one unknown (I)",
-          "5. Areas and Volumes (I)",
-          "6. Manipulation of Polynomials",
-          "7. Linear equation in one unknown (II)",
-          "8. Statistics (I)",
-          "9. Percentages I",
-          "10. Introduction to Coordinates",
-          "11. Angles Related to Straight Lines and Triangles",
-          "13. Numerical Estimation",
-          "14. Rate, Ratio and Proportion"
-        ]
+        options: curriculaByLevel["Year 7"] // Defaults to Year 7 initially
       },
       {
         id: "dimension",
@@ -320,7 +663,7 @@
       },
       {
         id: "genre",
-        name: "Primary Genre (20 Options)",
+        name: "Primary Genre",
         icon: "🕹️",
         options: [
           "Platformer / Jump & Run",
@@ -347,7 +690,7 @@
       },
       {
         id: "theme",
-        name: "Theme & Setting (20 Options)",
+        name: "Theme & Setting",
         icon: "🌍",
         options: [
           "Souls-like / Dark Fantasy (Stamina, epic bosses & campfire checkpoints)",
@@ -408,6 +751,72 @@
       rollUnlocked();
     }
 
+    // Passcode Verification System
+    function askForPasscode(context) {
+      if (isPasswordRevealed) {
+        togglePasswordMask(false);
+        return;
+      }
+
+      const input = prompt("Enter passcode to show password:");
+      if (input === PASSCODE_CORRECT) {
+        togglePasswordMask(true);
+      } else if (input !== null) {
+        alert("Incorrect passcode!");
+      }
+    }
+
+    function togglePasswordMask(reveal) {
+      isPasswordRevealed = reveal;
+      const mainField = document.getElementById("pass-field-main");
+      const mainBtn = document.getElementById("reveal-btn-main");
+      const modalField = document.getElementById("pass-field-modal");
+      const modalBtn = document.getElementById("reveal-btn-modal");
+
+      if (reveal) {
+        mainField.innerText = PLAIN_PASSWORD;
+        mainField.style.color = "var(--success)";
+        mainBtn.innerText = "Hide";
+        
+        modalField.innerText = PLAIN_PASSWORD;
+        modalField.style.color = "var(--success)";
+        modalBtn.innerText = "Hide";
+      } else {
+        mainField.innerText = "••••••••";
+        mainField.style.color = "";
+        mainBtn.innerText = "Reveal Password";
+        
+        modalField.innerText = "••••••••";
+        modalField.style.color = "";
+        modalBtn.innerText = "Reveal Password";
+      }
+    }
+
+    // Modal Display handlers
+    function openEnlargeModal() {
+      document.getElementById("credentialsModal").classList.add("show");
+    }
+
+    function closeEnlargeModal() {
+      document.getElementById("credentialsModal").classList.remove("show");
+    }
+
+    // Dynamic Curriculum Switcher logic
+    function changeCurriculumLevel(level) {
+      const mathCat = categories.find(cat => cat.id === "math");
+      const mathOptions = curriculaByLevel[level];
+      
+      mathCat.options = mathOptions;
+
+      const selectElement = document.getElementById("select-math");
+      selectElement.innerHTML = mathOptions.map(opt => `<option value="${opt}">${opt}</option>`).join("");
+
+      if (!state.math.locked) {
+        manualSelect("math", mathOptions[0]);
+        selectElement.value = mathOptions[0];
+      }
+    }
+
     function toggleLock(id) {
       state[id].locked = !state[id].locked;
       const card = document.getElementById(`card-${id}`);
@@ -463,6 +872,7 @@
       document.getElementById("pitchOutput").innerHTML = pitch;
     }
 
+    // Clipboard copy action
     function copyPitch() {
       const math = state.math.currentValue;
       const dim = state.dimension.currentValue.split(" ")[0];
