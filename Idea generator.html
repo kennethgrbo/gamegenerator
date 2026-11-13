@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Junior Game Idea Generator & Math Integrator</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --locked-border: #f59e0b;
+      --locked-bg: rgba(245, 158, 11, 0.1);
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --pitch-bg: #111827;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      padding: 2rem 1rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a5b4fc, #6366f1, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--text-sub);
+      font-size: 1rem;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.6rem;
+      border: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: white;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: var(--card-bg);
+      color: var(--text-sub);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      color: var(--text-main);
+      border-color: #64748b;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      width: 100%;
+      max-width: 1200px;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .card.locked {
+      border-color: var(--locked-border);
+      background-color: var(--locked-bg);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .lock-btn {
+      background: none;
+      border: none;
+      color: var(--text-sub);
+      font-size: 1.1rem;
+      padding: 0.25rem;
+      cursor: pointer;
+      border-radius: 0.375rem;
+    }
+
+    .card.locked .lock-btn {
+      color: var(--locked-border);
+    }
+
+    .card-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      min-height: 3.5rem;
+      display: flex;
+      align-items: center;
+      line-height: 1.3;
+    }
+
+    .card select {
+      margin-top: auto;
+      background-color: var(--bg);
+      color: var(--text-sub);
+      border: 1px solid var(--card-border);
+      padding: 0.45rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      width: 100%;
+      outline: none;
+    }
+
+    .card select:focus {
+      border-color: var(--accent);
+      color: var(--text-main);
+    }
+
+    .pitch-section {
+      width: 100%;
+      max-width: 1200px;
+      background-color: var(--pitch-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .pitch-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .pitch-header h2 {
+      font-size: 1.1rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pitch-text {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+
+    .pitch-text span {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .copied-toast {
+      font-size: 0.85rem;
+      color: #10b981;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .copied-toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Game Idea & Math Integrator</h1>
+    <p>Generate accessible video game concepts mapped directly to the Year 7 Mathematics curriculum.</p>
+  </header>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="rollUnlocked()">🎲 Generate New Idea</button>
+    <button class="btn-secondary" onclick="unlockAll()">🔓 Unlock All</button>
+    <button class="btn-secondary" onclick="copyPitch()">📋 Copy Pitch</button>
+    <span id="toast" class="copied-toast">Copied to clipboard!</span>
+  </div>
+
+  <div class="grid" id="slotsGrid"></div>
+
+  <section class="pitch-section">
+    <div class="pitch-header">
+      <h2>💡 Synthesized Concept Pitch</h2>
+    </div>
+    <p class="pitch-text" id="pitchOutput">Click "Generate New Idea" to brainstorm!</p>
+  </section>
+
+  <script>
+    const categories = [
+      {
+        id: "math",
+        name: "Year 7 Math Focus",
+        icon: "📐",
+        options: [
+          "1. Basic Computation",
+          "2. Directed Number and Number line",
+          "3. Algebraic Expressions",
+          "4. Linear equation in one unknown (I)",
+          "5. Areas and Volumes (I)",
+          "6. Manipulation of Polynomials",
+          "7. Linear equation in one unknown (II)",
+          "8. Statistics (I)",
+          "9. Percentages I",
+          "10. Introduction to Coordinates",
+          "11. Angles Related to Straight Lines and Triangles",
+          "13. Numerical Estimation",
+          "14. Rate, Ratio and Proportion"
+        ]
+      },
+      {
+        id: "dimension",
+        name: "Dimension",
+        icon: "🧊",
+        options: [
+          "2D (Side-Scrolling / Platformer view)",
+          "2D (Top-Down / Overhead view)",
+          "2.5D (Isometric Grid)",
+          "2.5D (Parallax / 3D depth on 2D plane)",
+          "3D (Third-Person follow camera)",
+          "3D (First-Person view)",
+          "3D (Fixed Diorama / Tabletop view)"
+        ]
+      },
+      {
+        id: "style",
+        name: "Art Style",
+        icon: "🎨",
+        options: [
+          "Pixel Art (16-bit Retro)",
+          "Rubber Hose (1930s Vintage Cartoon)",
+          "Stylized Realistic",
+          "Low-Poly / Flat Shaded 3D",
+          "Papercraft & Cardboard Cutout",
+          "Minimalist Geometric / Blueprint",
+          "Chalkboard / Hand-Sketched Math Note",
+          "Cell-Shaded Anime",
+          "Vibrant Claymation",
+          "Neon Synthwave / Wireframe"
+        ]
+      },
+      {
+        id: "control",
+        name: "Control Scheme",
+        icon: "🎮",
+        options: [
+          "Keyboard Only (WASD / Arrows + Space)",
+          "Keyboard & Mouse (Movement + Aim/Click)",
+          "Mouse Only (Point, Drag & Drop)",
+          "Gamepad / Console Controller",
+          "Touchscreen (Tap & Swipe Gestures)",
+          "One-Button / Single-Key Minimalist"
+        ]
+      },
+      {
+        id: "genre",
+        name: "Primary Genre (20 Options)",
+        icon: "🕹️",
+        options: [
+          "Platformer / Jump & Run",
+          "Endless Runner",
+          "Puzzle / Grid Brainteaser",
+          "Tower Defense",
+          "Dungeon Crawler",
+          "Maze / Labyrinth Escape",
+          "Turn-Based Battle / Tactics",
+          "Action Adventure",
+          "Top-Down Shooter / Bullet Dodger",
+          "Card Battler",
+          "Visual Novel / Story Quest",
+          "Management / Shop Tycoon",
+          "Racing / Speed Time-Trial",
+          "Rhythm / Music Timing",
+          "Stealth & Camouflage",
+          "Arcade High-Score Chaser",
+          "Base Defense / Fort Builder",
+          "Breakout / Ball Bouncing",
+          "Mini-Game Party Collection",
+          "Tile Merging / Grid Collapse"
+        ]
+      },
+      {
+        id: "theme",
+        name: "Theme & Setting (20 Options)",
+        icon: "🌍",
+        options: [
+          "Souls-like / Dark Fantasy (Stamina, epic bosses & campfire checkpoints)",
+          "Pokémon-style / Monster Taming (Capturing creatures, evolutions & pet duels)",
+          "Cyberpunk Neon Metropolis",
+          "Deep Space Orbital Station",
+          "Ancient Temple Ruins & Forgotten Relics",
+          "Solarpunk Eco-City & Floating Gardens",
+          "Submarine & Abyssal Ocean Trenches",
+          "Medieval Castle & Alchemy Lab",
+          "Haunted Manor & Friendly Ghosts",
+          "Post-Apocalyptic Scavenger Outpost",
+          "Whimsical Candy & Pastry Kingdom",
+          "Steampunk Sky-Islands & Airships",
+          "Microscopic World (Inside cells and atoms)",
+          "Secret Agent / Heist Headquarters",
+          "Pirate Cove & Uncharted Archipelago",
+          "Norse Myth & Frozen Glaciers",
+          "Prehistoric Dinosaurs & Jungle Volcano",
+          "Toy Store After Hours",
+          "Surreal Dreamscape & Clockwork Dimensions",
+          "Cozy Mountain Camp & Wild Forest"
+        ]
+      }
+    ];
+
+    const state = {};
+
+    function init() {
+      const grid = document.getElementById("slotsGrid");
+      grid.innerHTML = "";
+
+      categories.forEach(cat => {
+        state[cat.id] = {
+          locked: false,
+          currentValue: cat.options[0]
+        };
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.id = `card-${cat.id}`;
+
+        card.innerHTML = `
+          <div class="card-header">
+            <span class="card-title">${cat.icon} ${cat.name}</span>
+            <button class="lock-btn" onclick="toggleLock('${cat.id}')" title="Lock/Unlock this category">
+              <span id="lock-icon-${cat.id}">🔓</span>
+            </button>
+          </div>
+          <div class="card-value" id="val-${cat.id}">${state[cat.id].currentValue}</div>
+          <select id="select-${cat.id}" onchange="manualSelect('${cat.id}', this.value)">
+            ${cat.options.map(opt => `<option value="${opt}">${opt}</option>`).join("")}
+          </select>
+        `;
+        grid.appendChild(card);
+      });
+
+      rollUnlocked();
+    }
+
+    function toggleLock(id) {
+      state[id].locked = !state[id].locked;
+      const card = document.getElementById(`card-${id}`);
+      const icon = document.getElementById(`lock-icon-${id}`);
+
+      if (state[id].locked) {
+        card.classList.add("locked");
+        icon.innerText = "🔒";
+      } else {
+        card.classList.remove("locked");
+        icon.innerText = "🔓";
+      }
+    }
+
+    function unlockAll() {
+      categories.forEach(cat => {
+        if (state[cat.id].locked) {
+          toggleLock(cat.id);
+        }
+      });
+    }
+
+    function manualSelect(id, value) {
+      state[id].currentValue = value;
+      document.getElementById(`val-${id}`).innerText = value;
+      updatePitch();
+    }
+
+    function rollUnlocked() {
+      categories.forEach(cat => {
+        if (!state[cat.id].locked) {
+          const randomIndex = Math.floor(Math.random() * cat.options.length);
+          const chosen = cat.options[randomIndex];
+          state[cat.id].currentValue = chosen;
+
+          document.getElementById(`val-${cat.id}`).innerText = chosen;
+          document.getElementById(`select-${cat.id}`).value = chosen;
+        }
+      });
+      updatePitch();
+    }
+
+    function updatePitch() {
+      const math = state.math.currentValue;
+      const dim = state.dimension.currentValue.split(" ")[0];
+      const style = state.style.currentValue;
+      const ctrl = state.control.currentValue;
+      const genre = state.genre.currentValue.split(" /")[0];
+      const theme = state.theme.currentValue;
+
+      const pitch = `Create a <span>${dim}</span> <span>${genre}</span> rendered in <span>${style}</span> and controlled via <span>${ctrl}</span>. The player explores a <span>${theme}</span>, where gameplay puzzles and progression solve challenges tied to <span>${math}</span>.`;
+
+      document.getElementById("pitchOutput").innerHTML = pitch;
+    }
+
+    function copyPitch() {
+      const math = state.math.currentValue;
+      const dim = state.dimension.currentValue.split(" ")[0];
+      const style = state.style.currentValue;
+      const ctrl = state.control.currentValue;
+      const genre = state.genre.currentValue.split(" /")[0];
+      const theme = state.theme.currentValue;
+
+      const plainText = `Game Concept Pitch:\nA ${dim} ${genre} in ${style} controlled via ${ctrl}. Setting: ${theme}. Curriculum Focus: ${math}.`;
+
+      navigator.clipboard.writeText(plainText).then(() => {
+        const toast = document.getElementById("toast");
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 2000);
+      });
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
