@@ -38,84 +38,11 @@
       position: relative;
     }
 
-    /* Bolt.new Info Panel styling */
-    .info-panel {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background-color: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.5rem;
-      padding: 0.75rem;
-      font-size: 0.8rem;
-      color: var(--text-sub);
-      line-height: 1.4;
-      width: 300px;
-      z-index: 10;
-    }
-
-    .info-panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 0.25rem;
-    }
-
-    .info-panel-title {
-      font-weight: 700;
-      color: var(--text-main);
-      font-size: 0.85rem;
-    }
-
-    .info-panel a {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .info-panel a:hover {
-      text-decoration: underline;
-    }
-
-    .info-panel div {
-      margin-bottom: 0.25rem;
-    }
-
-    .info-panel div:last-child {
-      margin-bottom: 0;
-    }
-
-    .info-label {
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    /* Utility small icon buttons */
-    .icon-btn {
-      background: none;
-      border: none;
-      color: var(--text-sub);
-      cursor: pointer;
-      padding: 0.2rem;
-      font-size: 1rem;
-      border-radius: 0.25rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .icon-btn:hover {
-      color: var(--text-main);
-      background-color: var(--card-border);
-    }
-
     header {
       text-align: center;
       max-width: 800px;
       margin-bottom: 2rem;
-      margin-top: 3rem;
+      margin-top: 1rem;
     }
 
     header h1 {
@@ -343,85 +270,9 @@
     .copied-toast.show {
       opacity: 1;
     }
-
-    /* Modal / Popup styling for Enlarge Credentials */
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-backdrop.show {
-      display: flex;
-    }
-
-    .modal-card {
-      background-color: var(--card-bg);
-      border: 3px solid var(--accent);
-      border-radius: 1.5rem;
-      padding: 2.5rem;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-      position: relative;
-    }
-
-    .modal-close-btn {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      font-size: 1.5rem;
-    }
-
-    .modal-card h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-      color: var(--accent);
-      border-bottom: 2px solid var(--card-border);
-      padding-bottom: 0.5rem;
-    }
-
-    .modal-card div {
-      font-size: 1.1rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .modal-card div:last-child {
-      margin-bottom: 0;
-    }
-
-    @media (max-width: 768px) {
-      .info-panel {
-        position: static;
-        width: 100%;
-        margin-bottom: 1rem;
-      }
-      header {
-        margin-top: 1rem;
-      }
-    }
   </style>
 </head>
 <body>
-
-  <!-- Top Right Info Panel -->
-  <div class="info-panel">
-    <div class="info-panel-header">
-      <span class="info-panel-title">System Account</span>
-      <button class="icon-btn" onclick="openEnlargeModal()" title="Enlarge credentials view">🔍</button>
-    </div>
-    <div><span class="info-label">Name:</span> Bolt.new</div>
-    <div><span class="info-label">Website:</span> <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer">https://bolt.new/</a></div>
-    <div><span class="info-label">Account:</span> learningapp6@luac.edu.hk</div>
-  </div>
 
   <header>
     <h1>Game Idea & Math Integrator</h1>
@@ -456,17 +307,6 @@
     </div>
     <p class="pitch-text" id="pitchOutput">Click "Generate New Idea" to brainstorm!</p>
   </section>
-
-  <!-- Enlarge Credentials Modal -->
-  <div class="modal-backdrop" id="credentialsModal">
-    <div class="modal-card">
-      <button class="icon-btn modal-close-btn" onclick="closeEnlargeModal()">❌</button>
-      <h3>Bolt.new Credentials</h3>
-      <div><span class="info-label">Name:</span> Bolt.new</div>
-      <div><span class="info-label">Website:</span> <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer">https://bolt.new/</a></div>
-      <div><span class="info-label">Account:</span> learningapp6@luac.edu.hk</div>
-    </div>
-  </div>
 
   <script>
     // Organized mathematics curricula options per year level
@@ -718,15 +558,6 @@
       });
 
       rollUnlocked();
-    }
-
-    // Modal Display handlers
-    function openEnlargeModal() {
-      document.getElementById("credentialsModal").classList.add("show");
-    }
-
-    function closeEnlargeModal() {
-      document.getElementById("credentialsModal").classList.remove("show");
     }
 
     // Dynamic Curriculum Switcher logic
